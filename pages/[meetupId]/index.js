@@ -3,6 +3,10 @@ import { MongoClient, ObjectId } from "mongodb";
 import Head from "next/head";
 
 const MeetupDetailsPage = (props) => {
+  if (!props.meetupDetail){
+    return <p>Loading...</p>
+  }
+
   return (
     <>
       <Head>
@@ -32,7 +36,7 @@ export const getStaticPaths = async () => {
     paths: meetups.map((meetup) => ({
       params: { meetupId: meetup._id.toString() },
     })),
-    fallback: true,
+    fallback: false,
   };
 };
 
@@ -47,14 +51,21 @@ export const getStaticProps = async (context) => {
   const selectedMeetup = await meetupsCollection.findOne({
     _id: ObjectId.createFromHexString(meetupId),
   });
+
+  if (!selectedMeetup) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       meetupDetail: {
         id: selectedMeetup._id.toString(),
-        title: selectedMeetup.title,
-        image: selectedMeetup.image,
-        description: selectedMeetup.description,
-        address: selectedMeetup.address,
+        title: selectedMeetup.title || 'No title',
+        image: selectedMeetup.image || '',
+        description: selectedMeetup.description || 'No description',
+        address: selectedMeetup.address || 'No address',
       },
     },
   };
