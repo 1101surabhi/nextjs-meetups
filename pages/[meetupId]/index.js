@@ -4,9 +4,6 @@ import Head from "next/head";
 import { Suspense } from "react";
 
 const MeetupDetailsPage = (props) => {
-  if (!props.meetupDetail) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <>
@@ -39,7 +36,7 @@ export const getStaticPaths = async () => {
     paths: meetups.map((meetup) => ({
       params: { meetupId: meetup._id.toString() },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 };
 
@@ -55,20 +52,14 @@ export const getStaticProps = async (context) => {
     _id: ObjectId.createFromHexString(meetupId),
   });
 
-  if (!selectedMeetup) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
     props: {
       meetupDetail: {
         id: selectedMeetup._id.toString(),
-        title: selectedMeetup.title || "No title",
-        image: selectedMeetup.image || "",
-        description: selectedMeetup.description || "No description",
-        address: selectedMeetup.address || "No address",
+        title: selectedMeetup.title,
+        image: selectedMeetup.image,
+        description: selectedMeetup.description,
+        address: selectedMeetup.address,
       },
     },
   };
