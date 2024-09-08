@@ -1,10 +1,11 @@
 import MeetupDetail from "@/components/meetups/MeetupDetail";
 import { MongoClient, ObjectId } from "mongodb";
 import Head from "next/head";
+import { Suspense } from "react";
 
 const MeetupDetailsPage = (props) => {
-  if (!props.meetupDetail){
-    return <p>Loading...</p>
+  if (!props.meetupDetail) {
+    return <p>Loading...</p>;
   }
 
   return (
@@ -13,12 +14,14 @@ const MeetupDetailsPage = (props) => {
         <title>{props.meetupDetail.title}</title>
         <meta name="description" content={props.meetupDetail.description} />
       </Head>
-      <MeetupDetail
-        image={props.meetupDetail.image}
-        title={props.meetupDetail.title}
-        address={props.meetupDetail.address}
-        description={props.meetupDetail.description}
-      />
+      <Suspense fallback={<p>Loading...</p>}>
+        <MeetupDetail
+          image={props.meetupDetail.image}
+          title={props.meetupDetail.title}
+          address={props.meetupDetail.address}
+          description={props.meetupDetail.description}
+        />
+      </Suspense>
     </>
   );
 };
@@ -62,10 +65,10 @@ export const getStaticProps = async (context) => {
     props: {
       meetupDetail: {
         id: selectedMeetup._id.toString(),
-        title: selectedMeetup.title || 'No title',
-        image: selectedMeetup.image || '',
-        description: selectedMeetup.description || 'No description',
-        address: selectedMeetup.address || 'No address',
+        title: selectedMeetup.title || "No title",
+        image: selectedMeetup.image || "",
+        description: selectedMeetup.description || "No description",
+        address: selectedMeetup.address || "No address",
       },
     },
   };
