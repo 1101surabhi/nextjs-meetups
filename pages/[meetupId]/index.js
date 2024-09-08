@@ -5,16 +5,17 @@ import Head from "next/head";
 const MeetupDetailsPage = (props) => {
   return (
     <>
-    <Head>
-      <title>{props.meetupDetail.title}</title>
-      <meta name="description" content={props.meetupDetail.description} />
-    </Head>
-    <MeetupDetail
-      image={props.meetupDetail.image}
-      title={props.meetupDetail.title}
-      address={props.meetupDetail.address}
-      description={props.meetupDetail.description}
-    /></>
+      <Head>
+        <title>{props.meetupDetail.title}</title>
+        <meta name="description" content={props.meetupDetail.description} />
+      </Head>
+      <MeetupDetail
+        image={props.meetupDetail.image}
+        title={props.meetupDetail.title}
+        address={props.meetupDetail.address}
+        description={props.meetupDetail.description}
+      />
+    </>
   );
 };
 
@@ -43,7 +44,9 @@ export const getStaticProps = async (context) => {
   );
   const db = client.db();
   const meetupsCollection = db.collection("meetups");
-  const selectedMeetup = await meetupsCollection.findOne({ _id: new ObjectId(meetupId) });
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId.createFromHexString(meetupId),
+  });
   return {
     props: {
       meetupDetail: {
@@ -51,8 +54,8 @@ export const getStaticProps = async (context) => {
         title: selectedMeetup.title,
         image: selectedMeetup.image,
         description: selectedMeetup.description,
-        address: selectedMeetup.address
-      }
+        address: selectedMeetup.address,
+      },
     },
   };
 };
